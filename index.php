@@ -1,7 +1,7 @@
 <?php
 header('Content-type: text/html; charset=UTF-8');
 include_once "errorCode.php";
-//include_once "conn.php";
+include_once "DB.class.php";
 
 /**
  * SHA1 class
@@ -10,17 +10,12 @@ include_once "errorCode.php";
  */
 class SHA1
 {
-	public $_conn; // 数据库连接
 	public $_token = 'fu200811';
 	public $_appid = 'wx372f1b95135960d5'; //用户唯一凭证
 	public $_secret = '1bec6eb6bc06dfcbcb3afd37d4aa5f8e';//用户唯一凭证密钥
 //	public $_appid = 'wxd1cc76f79fa681cf'; //用户唯一凭证
 //	public $_secret = '9436c94ed8799e7e2196cb804a497596';//用户唯一凭证密钥
 
-	public function __construct($conn)
-	{
-		$this->_conn = $conn;
-	}
 	/**
 	 * 获取凭证码
 	 * @return string access_token
@@ -376,10 +371,7 @@ class SHA1
 		return $result;
 	}
 }
-$data = $_GET;
-echo $data['echostr'];die;
 $obj = new SHA1($conn);
-//var_dump($obj->sendMessage());die;
 $postStr = file_get_contents('php://input');
 $data = $obj->analysisXmlData($postStr);
 // 保存微信用户的位置信息
