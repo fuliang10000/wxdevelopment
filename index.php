@@ -376,7 +376,7 @@ class SHA1
 		return $result;
 	}
 }
-$data = file_get_contents('php://input');
+$data = $_GET;
 echo $data['echostr'];die;
 $obj = new SHA1($conn);
 //var_dump($obj->sendMessage());die;
