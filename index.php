@@ -1,7 +1,7 @@
 <?php
 header('Content-type: text/html; charset=UTF-8');
 include_once "errorCode.php";
-include_once "conn.php";
+//include_once "conn.php";
 
 /**
  * SHA1 class
@@ -376,9 +376,8 @@ class SHA1
 		return $result;
 	}
 }
-//$data = $_GET;
-//echo $data['echostr'];die;
-echo 11;die;
+$data = $_GET;
+echo $data['echostr'];die;
 $obj = new SHA1($conn);
 //var_dump($obj->sendMessage());die;
 $postStr = file_get_contents('php://input');
