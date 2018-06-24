@@ -1,7 +1,7 @@
 <?php
 header('Content-type: text/html; charset=UTF-8');
 include_once "errorCode.php";
-include_once "conn.php";
+include_once "DB.class.php";
 
 /**
  * SHA1 class
@@ -17,9 +17,9 @@ class SHA1
 //	public $_appid = 'wxd1cc76f79fa681cf'; //用户唯一凭证
 //	public $_secret = '9436c94ed8799e7e2196cb804a497596';//用户唯一凭证密钥
 
-	public function __construct($conn)
+	public function __construct()
 	{
-		$this->_conn = $conn;
+		$this->_conn = DB::getInstance();
 	}
 
 	/**
@@ -32,8 +32,7 @@ class SHA1
 	{
 		$accessToken = '';
 		$sql = "SELECT * FROM `access_token` WHERE deleted = 0";
-		$res = mysqli_query($this->_conn,$sql);
-		$row = mysqli_fetch_assoc($res);
+		$row = $this->_conn->getRow($sql);
 		if ($row) {
 			// 过期时间，当小于0时表示access_token已过期；
 			$isOverdue = ($row['create_time'] + $row['expires_in']) - time();
@@ -156,10 +155,10 @@ class SHA1
 			$time = time();
 			$isOverdue = $time - 7200;
 			$sql = "UPDATE `access_token` SET deleted = 1 WHERE create_time <= {$isOverdue}";
-			mysqli_query($this->_conn,$sql);
+			$this->_conn->query($sql);
 			// 插入新的凭证码
 			$sql = "INSERT INTO `access_token` VALUES (null,'{$result['access_token']}','{$result['expires_in']}','{$time}',0)";
-			$res = mysqli_query($this->_conn,$sql);
+			$res = $this->_conn->query($sql);
 			if ($res) {
 				$returnArr = ['success' => true, 'access_token' => $result['access_token'], 'message' => '获取并保存token成功！'];
 			} else {
@@ -297,7 +296,7 @@ class SHA1
 	public function saveUserAddressInfo($data)
 	{
 		$sql = "INSERT INTO `user_address` VALUES (null,'{$data['ToUserName']}','{$data['FromUserName']}','{$data['Latitude']}','{$data['Longitude']}','{$data['Precision']}','{$data['CreateTime']}')";
-		mysqli_query($this->_conn,$sql);
+		$this->_conn->query($sql);
 	}
 
 	/**
@@ -309,8 +308,7 @@ class SHA1
 	{
 		$returnArr = ['success' => false, 'data' => [], 'message' => '未获取到用户位置信息！'];
 		$sql = "SELECT `latitude`, `longitude` FROM `user_address` WHERE `from_user_name` = '{$username}' ORDER BY `create_time` DESC LIMIT 1";
-		$result = mysqli_query($this->_conn,$sql);
-		$row = mysqli_fetch_assoc($result);
+		$row = $this->_conn->getRow($sql);
 		if (!empty($row) && is_array($row)) {
 			$returnArr = ['success' => true, 'data' => $row, 'message' => '获取用户位置信息成功！'];
 		}
@@ -331,7 +329,7 @@ class SHA1
 	{
 		// 将用户发送的消息保存到数据库
 		$sql = "INSERT INTO `message` VALUES (null,'{$MsgId}','{$ToUserName}','{$FromUserName}','{$CreateTime}','{$MsgType}','{$Content}')";
-		mysqli_query($this->_conn,$sql);
+		$this->_conn->query($sql);
 	}
 
 	/**
