@@ -21,6 +21,7 @@ class SHA1
 	{
 		$this->_conn = $conn;
 	}
+
 	/**
 	 * 获取凭证码
 	 * @return string access_token
@@ -376,8 +377,7 @@ class SHA1
 		return $result;
 	}
 }
-$obj = new SHA1($conn);
-//var_dump($obj->sendMessage());die;
+$obj = new SHA1();
 $postStr = file_get_contents('php://input');
 $data = $obj->analysisXmlData($postStr);
 // 保存微信用户的位置信息
