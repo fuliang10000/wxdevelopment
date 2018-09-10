@@ -6,7 +6,7 @@
  */
 class DB
 {
-    private $host     ='47.106.109.33';  //数据库主机
+    private $host     = '47.106.109.33';  //数据库主机
     private $user     = 'root';          //数据库用户名
     private $pwd      = 'A37ce3c37da1';  //数据库用户名密码
     private $database = 'wxdevelopment'; //数据库名
