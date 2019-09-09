@@ -11,11 +11,9 @@ include_once "DB.class.php";
 class SHA1
 {
 	public $_conn; // 数据库连接
-	public $_token = 'fu200811';
-	public $_appid = 'wx372f1b95135960d5'; //用户唯一凭证
-	public $_secret = '1bec6eb6bc06dfcbcb3afd37d4aa5f8e';//用户唯一凭证密钥
-//	public $_appid = 'wxd1cc76f79fa681cf'; //用户唯一凭证
-//	public $_secret = '9436c94ed8799e7e2196cb804a497596';//用户唯一凭证密钥
+	public $_token = 'rchxdyf';
+	public $_appid = 'wx126b85e79a98844f'; //用户唯一凭证
+	public $_secret = 'a3b7c32657c9afc0dbbf7d0c7534175e';//用户唯一凭证密钥
 
 	public function __construct()
 	{
@@ -376,54 +374,55 @@ class SHA1
 	}
 }
 $obj = new SHA1();
-$postStr = file_get_contents('php://input');
-$data = $obj->analysisXmlData($postStr);
-// 保存微信用户的位置信息
-if ($data['Event'] == 'LOCATION') {
-	$obj->saveUserAddressInfo($data);
-}
-// 将数组打散成key = value形式的变量
-extract($data);
-$content = '';
-$time = time();
-if ($MsgType == 'text') {
-	// 将用户发送的消息保存到数据库
-	$obj->saveUserSendMessage($MsgId, $ToUserName, $FromUserName, $CreateTime, $MsgType, $Content);
-	$content = $obj->getCityWeather($Content);
-} elseif ($MsgType == 'event') {
-	switch ($EventKey) {
-		case 'V1001':
-			$content = '我暂时无法获取您的位置信息，可能是因为没有获取您位置信息的权限！';
-			// 查微信用户所在城市，并返回该城市的天气情况
-			$userAddress = $obj->getUserAddressByUsername($FromUserName);
-			if ($userAddress['success']) {
-				$cityName = $obj->getAddressBy($userAddress['data']['latitude'], $userAddress['data']['longitude']);
-				if ($cityName['success']) {
-					$content = $obj->getCityWeather($cityName['city_name'], 'one');
-				}
-			}
-			break;
-		case 'V1002':
-			$content = '我嘴巴都讲干了，您让我休息会儿吧。';
-			$result = $obj->getJoke();
-			if ($result['success']) {
-				$content = $result['content'];
-			}
-			break;
-		case 'V1003':
-			$content = '谢谢您的点赞，我会继续努力的[Yeah!]';
-			break;
-	}
-} else {
-	$content = '你要干嘛？';
-}
-$sendArr = '<xml>
-				<ToUserName><![CDATA['.$FromUserName.']]></ToUserName>
-				<FromUserName><![CDATA['.$ToUserName.']]></FromUserName>
-				<CreateTime>'.$time.'</CreateTime>
-				<MsgType><![CDATA[text]]></MsgType>
-				<Content><![CDATA['.$content.']]></Content>
-			</xml>';
-ob_clean();
-
-echo $sendArr;
+$obj->editConfigValidate();die;
+//$postStr = file_get_contents('php://input');
+//$data = $obj->analysisXmlData($postStr);
+//// 保存微信用户的位置信息
+//if ($data['Event'] == 'LOCATION') {
+//	$obj->saveUserAddressInfo($data);
+//}
+//// 将数组打散成key = value形式的变量
+//extract($data);
+//$content = '';
+//$time = time();
+//if ($MsgType == 'text') {
+//	// 将用户发送的消息保存到数据库
+//	$obj->saveUserSendMessage($MsgId, $ToUserName, $FromUserName, $CreateTime, $MsgType, $Content);
+//	$content = $obj->getCityWeather($Content);
+//} elseif ($MsgType == 'event') {
+//	switch ($EventKey) {
+//		case 'V1001':
+//			$content = '我暂时无法获取您的位置信息，可能是因为没有获取您位置信息的权限！';
+//			// 查微信用户所在城市，并返回该城市的天气情况
+//			$userAddress = $obj->getUserAddressByUsername($FromUserName);
+//			if ($userAddress['success']) {
+//				$cityName = $obj->getAddressBy($userAddress['data']['latitude'], $userAddress['data']['longitude']);
+//				if ($cityName['success']) {
+//					$content = $obj->getCityWeather($cityName['city_name'], 'one');
+//				}
+//			}
+//			break;
+//		case 'V1002':
+//			$content = '我嘴巴都讲干了，您让我休息会儿吧。';
+//			$result = $obj->getJoke();
+//			if ($result['success']) {
+//				$content = $result['content'];
+//			}
+//			break;
+//		case 'V1003':
+//			$content = '谢谢您的点赞，我会继续努力的[Yeah!]';
+//			break;
+//	}
+//} else {
+//	$content = '你要干嘛？';
+//}
+//$sendArr = '<xml>
+//				<ToUserName><![CDATA['.$FromUserName.']]></ToUserName>
+//				<FromUserName><![CDATA['.$ToUserName.']]></FromUserName>
+//				<CreateTime>'.$time.'</CreateTime>
+//				<MsgType><![CDATA[text]]></MsgType>
+//				<Content><![CDATA['.$content.']]></Content>
+//			</xml>';
+//ob_clean();
+//
+//echo $sendArr;
